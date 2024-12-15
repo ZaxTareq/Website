@@ -1,7 +1,33 @@
-<html>
-  <body>
-       <h1>Lmao!, Your IP Is with me Now, Lmfao</h1>
-  </body>
-</html></h1>
-  </body>
-</html>
+import React from 'react';
+
+const HtmlViewer = () => {
+  const [html, setHtml] = React.useState('<h1>Hello, World!</h1>');
+  const [renderedHtml, setRenderedHtml] = React.useState('');
+
+  React.useEffect(() => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    setRenderedHtml(doc.documentElement.innerHTML);
+  }, [html]);
+
+  const handleHtmlChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setHtml(e.target.value);
+  };
+
+  return (
+    <div className="max-w-md mx-auto p-4 mt-10 bg-white rounded-lg shadow-md">
+      <h2 className="text-lg font-bold mb-4">HTML Viewer</h2>
+      <textarea
+        className="w-full h-64 p-2 mb-4 border border-gray-300 rounded"
+        value={html}
+        onChange={handleHtmlChange}
+      />
+      <div
+        className="border border-gray-300 rounded p-4"
+        dangerouslySetInnerHTML={{ __html: renderedHtml }}
+      />
+    </div>
+  );
+};
+
+export default HtmlViewer;
