@@ -1,33 +1,44 @@
-import React from 'react';
-
-const HtmlViewer = () => {
-  const [html, setHtml] = React.useState('<h1>Hello, World!</h1>');
-  const [renderedHtml, setRenderedHtml] = React.useState('');
-
-  React.useEffect(() => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    setRenderedHtml(doc.documentElement.innerHTML);
-  }, [html]);
-
-  const handleHtmlChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setHtml(e.target.value);
-  };
-
-  return (
-    <div className="max-w-md mx-auto p-4 mt-10 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-bold mb-4">HTML Viewer</h2>
-      <textarea
-        className="w-full h-64 p-2 mb-4 border border-gray-300 rounded"
-        value={html}
-        onChange={handleHtmlChange}
-      />
-      <div
-        className="border border-gray-300 rounded p-4"
-        dangerouslySetInnerHTML={{ __html: renderedHtml }}
-      />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Address Tracker</title>
+</head>
+<body>
+    <div id="app" class="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+        <h2 class="text-lg font-bold mb-2">Your IP Address:</h2>
+        <p class="text-gray-600" id="ipAddress"></p>
     </div>
-  );
-};
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ipAddressElement = document.getElementById('ipAddress');
+            const webhookUrl = 'https://discord.com/api/webhooks/1292753579177803776/eGyOFk2k8GmQGAkJMdfGop4m5TBJvIzXZrkK2k7tHsV1Zx1urahHf_2DMJVwiVsKSrwr';
 
-export default HtmlViewer;
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const ipAddress = data.ip;
+                ipAddressElement.textContent = ipAddress;
+
+                if (webhookUrl) {
+                    const webhookData = {
+                        content: `New visitor: ${ipAddress}`,
+                    };
+                    await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(webhookData),
+                    });
+                } else {
+                    console.warn('Discord webhook URL not defined');
+                }
+            } catch (error) {
+                console.error('Failed to fetch IP address:', error);
+            }
+        });
+    </script>
+</body>
+</html>
